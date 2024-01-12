@@ -9,6 +9,7 @@ from esphome.const import (
 )
 
 from .. import lilygo_t5_47_ns
+from esphome.const import __version__ as ESPHOME_VERSION
 
 CONF_CYCLES_RENDER = "cycles_render"
 CONF_CYCLES_INVERT = "cycles_invert"
@@ -34,6 +35,9 @@ async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID])
 
     await cg.register_component(var, config)
+    if cv.Version.parse(ESPHOME_VERSION) < cv.Version.parse("2023.12.0"):
+        await cg.register_component(var, config)
+
     await display.register_display(var, config)
 
     cg.add(var.set_full_update_every(config[CONF_FULL_UPDATE_EVERY]))
